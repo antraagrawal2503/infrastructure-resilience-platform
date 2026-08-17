@@ -220,3 +220,7 @@ __marimo__/
 # Raw geospatial datasets
 data/raw/*
 !data/raw/.gitkeep
+
+# Generated geospatial datasets
+data/processed/*
+!data/processed/.gitkeep
