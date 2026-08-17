@@ -6,3 +6,6 @@ matplotlib
 folium
 scikit-learn
 jupyter
+
+streamlit
+pydeck
