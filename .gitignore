@@ -224,3 +224,4 @@ data/raw/*
 # Generated geospatial datasets
 data/processed/*
 !data/processed/.gitkeep
+.DS_Store
