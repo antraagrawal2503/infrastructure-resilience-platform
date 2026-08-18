@@ -14,7 +14,13 @@
 ![PyDeck](https://img.shields.io/badge/PyDeck-Interactive_Maps-a855f7?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Active_Development-f472b6?style=for-the-badge)
 
-<br>
+<br><br>
+
+<a href="https://infrastructure-resilience-platform-w9uqhbjnpou3bxfreuei9x.streamlit.app">
+  <img src="https://img.shields.io/badge/🚀_LIVE_DASHBOARD-Launch_App-ff69b4?style=for-the-badge">
+</a>
+
+<br><br>
 
 ![Brisbane Infrastructure Resilience Dashboard](docs/images/dashboard_overview.png)
 
