@@ -328,42 +328,79 @@ st.divider()
 # TOP PRIORITY ROADS
 # -------------------------
 
-st.subheader("Top Priority Road Segments")
+st.subheader("Top Priority Roads")
 
-
-top_segments = (
-    filtered[
-        [
-            "road_name_full",
-            "class",
-            "sub_class",
-            "flood_exposure",
-            "risk_score",
-            "priority",
-        ]
-    ]
-    .sort_values(
-        "risk_score",
-        ascending=False
-    )
-    .head(20)
+st.caption(
+    "Road-level summary ranked by maximum risk score and exposure severity."
 )
 
+named_roads = filtered[
+    filtered["road_name_full"].notna()
+    & (filtered["road_name_full"].str.strip() != "")
+].copy()
 
-top_segments = top_segments.rename(
+road_summary = (
+    named_roads
+    .groupby("road_name_full")
+    .agg(
+        road_class=(
+            "class",
+            lambda x: x.mode().iloc[0]
+            if not x.mode().empty
+            else "Unknown"
+        ),
+        max_risk_score=("risk_score", "max"),
+        mean_risk_score=("risk_score", "mean"),
+        total_segments=("segment_id", "count"),
+        exposed_segments=(
+            "flood_exposure",
+            lambda x: (x != "None").sum()
+        ),
+        high_exposure_segments=(
+            "flood_exposure",
+            lambda x: x.isin(
+                ["Medium", "High"]
+            ).sum()
+        ),
+        critical_segments=(
+            "priority",
+            lambda x: (x == "Critical").sum()
+        ),
+    )
+    .reset_index()
+)
+
+road_summary = road_summary.sort_values(
+    [
+        "max_risk_score",
+        "high_exposure_segments",
+        "exposed_segments",
+    ],
+    ascending=[False, False, False],
+)
+
+top_roads = road_summary.head(20).copy()
+
+top_roads["mean_risk_score"] = (
+    top_roads["mean_risk_score"]
+    .round(1)
+)
+
+top_roads = top_roads.rename(
     columns={
         "road_name_full": "Road",
-        "class": "Road Class",
-        "sub_class": "Infrastructure Type",
-        "flood_exposure": "Flood Exposure",
-        "risk_score": "Risk Score",
-        "priority": "Priority",
+        "road_class": "Road Class",
+        "max_risk_score": "Max Risk Score",
+        "mean_risk_score": "Mean Risk Score",
+        "total_segments": "Segments",
+        "exposed_segments": "Flood Exposed",
+        "high_exposure_segments": "Medium / High Exposure",
+        "critical_segments": "Critical Segments",
     }
 )
 
-
 st.dataframe(
-    top_segments,
-    use_container_width=True,
+    top_roads,
+    width="stretch",
     hide_index=True
 )
